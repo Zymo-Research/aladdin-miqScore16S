@@ -59,14 +59,16 @@ workflow {
     check_design.out.checked_design
         .splitCsv( header: true )
         .first() // Only support 1 pair of FASTQ for now
-        .branch {
-            read1      : file(it['read_1'])
-            read2      : file(it['read_2'])
+        .multiMap {
+            read_1     : file(it['read_1'])
+            read_2     : file(it['read_2'])
             sample_name: it['sample']
         }
         .set { input }
-    miqscore16s(input.sample_name, input.read1, input.read2)
-    output_locations = miqscore16s.out.report.map { "${params.outdir}/miqscore16s/" + it.getName() } 
+    miqscore16s(input.sample_name, input.read_1, input.read_2)
+    miqscore16s.out.report.map { "${params.outdir}/miqscore16s/" + it.getName() }
+        .collectFile(name: "${params.outdir}/download_data/file_locations.txt", newLine: true)
+        .set { output_locations }
     summarize_downloads(output_locations)
 }
 

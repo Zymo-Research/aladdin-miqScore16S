@@ -8,7 +8,6 @@ import argparse
 import logging
 import os
 import json
-import csv
 
 # Create a logger
 logging.basicConfig(format='%(name)s - %(asctime)s %(levelname)s: %(message)s')

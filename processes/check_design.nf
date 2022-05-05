@@ -1,7 +1,5 @@
 // Sanity check design file
 process check_design {
-    container 'python:3.9'
-
     input:
     path design
 
