@@ -21,6 +21,9 @@ if ( workflow.profile == 'awsbatch') {
     if (params.tracedir.startsWith('s3:')) exit 1, "Specify a local tracedir or run without trace! S3 cannot be used for tracefiles."
 }
 
+// --outdir Remove potential trailing slash at the end
+outdir = params.outdir - ~/\/*$/
+
 /*
  * SET & VALIDATE INPUT CHANNELS
  */
@@ -35,20 +38,20 @@ log.info summary.collect { k,v -> "${k.padRight(21)}: $v" }.join("\n")
 // Save workflow summary plain text
 Channel.from( summary.collect{ [it.key, it.value] } )
        .map { k,v -> "${k.padRight(21)} : $v" }
-       .collectFile(name: "${params.outdir}/pipeline_info/workflow_summary.txt", newLine: true, sort: 'index')
+       .collectFile(name: "${outdir}/pipeline_info/workflow_summary.txt", newLine: true, sort: 'index')
 
 /*
  * PROCESS DEFINITION
  */
 include { check_design } from "./processes/check_design"
 include { miqscore16s } from "./processes/miqscore16s" addParams(
-    publish_dir: "${params.outdir}/miqscore16s",
-    foward_primer_length: params.foward_primer_length,
+    publish_dir: "${outdir}/miqscore16s",
+    forward_primer_length: params.forward_primer_length,
     reverse_primer_length: params.reverse_primer_length,
     amplicon_length: params.amplicon_length
 )
 include { summarize_downloads } from "./processes/summarize_downloads" addParams(
-    publish_dir: "${params.outdir}/download_data"
+    publish_dir: "${outdir}/download_data"
 )
 
 /*
@@ -66,8 +69,8 @@ workflow {
         }
         .set { input }
     miqscore16s(input.sample_name, input.read_1, input.read_2)
-    miqscore16s.out.report.map { "${params.outdir}/miqscore16s/" + it.getName() }
-        .collectFile(name: "${params.outdir}/download_data/file_locations.txt", newLine: true)
+    miqscore16s.out.report.map { "${outdir}/miqscore16s/" + it.getName() }
+        .collectFile(name: "${outdir}/download_data/file_locations.txt", newLine: true)
         .set { output_locations }
     summarize_downloads(output_locations)
 }
