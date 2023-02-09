@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 /*
-A nextflow pipeline to calculate MIQ score, that is compatible with Aladdin platform.
+A nextflow pipeline to calculate MIQ 16S score, that is compatible with Aladdin platform.
 This is essentially a wrapper to run the code in MIQ score public repos, plus code to interact with Aladdin platform.
 */
 
@@ -32,7 +32,7 @@ design = setup_channel(params.design, "design CSV file", true, "")
 /*
  * COLLECT SUMMARY & LOG
  */
-log.info "Aladdin miqScore v${workflow.manifest.version}"
+log.info "Aladdin miqScore16S v${workflow.manifest.version}"
 def summary = collect_summary(params, workflow)
 log.info summary.collect { k,v -> "${k.padRight(21)}: $v" }.join("\n")
 // Save workflow summary plain text
@@ -85,8 +85,8 @@ workflow.onComplete {
       log.info "Number of successfully ran process(es) : ${workflow.stats.succeedCount}"
     }
     if(workflow.success){
-        log.info "[miqScore] Pipeline completed successfully"
+        log.info "[miqScore16S] Pipeline completed successfully"
     } else {
-        log.info "[miqScore] Pipeline completed with errors"
+        log.info "[miqScore16S] Pipeline completed with errors"
     }
 }

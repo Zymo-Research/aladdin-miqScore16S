@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/Zymo-Research/aladdin-miqScore/main/nextflow_schema.json",
-    "title": "Zymo-Research/aladdin-miqScore pipeline parameters",
+    "$id": "https://raw.githubusercontent.com/Zymo-Research/aladdin-miqScore16S/main/nextflow_schema.json",
+    "title": "Zymo-Research/aladdin-miqScore16S pipeline parameters",
     "description": "Nextflow pipeline for calculating MIQ scores, part of the Aladdin Bioinformatics Platform pipeline catalog",
     "single_sample": true,
     "group_comparison": false,
