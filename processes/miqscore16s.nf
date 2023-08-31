@@ -9,9 +9,7 @@ process miqscore16s {
     publishDir "${params.publish_dir}", mode: 'copy'
 
     input:
-    env SAMPLENAME
-    path read_1
-    path read_2
+    tuple val(name), path(read_1), path(read_2)
 
     output:
     path '*.html', emit: report
@@ -22,6 +20,7 @@ process miqscore16s {
     mv $read_1 /data/input/sequence/standard_submitted_R1.fastq
     mv $read_2 /data/input/sequence/standard_submitted_R2.fastq
     mkdir -p /data/output
+    export SAMPLENAME=${name}
     export FORWARDPRIMERLENGTH=${params.forward_primer_length}
     export REVERSEPRIMERLENGTH=${params.reverse_primer_length}
     export AMPLICONLENGTH=${params.amplicon_length}

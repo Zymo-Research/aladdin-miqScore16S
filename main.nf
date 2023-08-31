@@ -44,6 +44,9 @@ Channel.from( summary.collect{ [it.key, it.value] } )
  * PROCESS DEFINITION
  */
 include { check_design } from "./processes/check_design"
+include { downsample } from "./processes/downsample" addParams(
+    downsample_num: params.downsample_num
+)
 include { miqscore16s } from "./processes/miqscore16s" addParams(
     publish_dir: "${outdir}/miqscore16s",
     forward_primer_length: params.forward_primer_length,
@@ -62,13 +65,13 @@ workflow {
     check_design.out.checked_design
         .splitCsv( header: true )
         .first() // Only support 1 pair of FASTQ for now
-        .multiMap {
-            read_1     : file(it['read_1'])
-            read_2     : file(it['read_2'])
-            sample_name: it['sample']
+        .map {
+            [ it['sample'], [ file(it['read_1']), file(it['read_2']) ] ]
         }
         .set { input }
-    miqscore16s(input.sample_name, input.read_1, input.read_2)
+    downsample(input)
+    miqscore_input = params.downsample_num ? downsample.out.reads : input
+    miqscore16s(miqscore_input)
     miqscore16s.out.report.map { "${outdir}/miqscore16s/" + it.getName() }
         .collectFile(name: "${outdir}/download_data/file_locations.txt", newLine: true)
         .set { output_locations }
