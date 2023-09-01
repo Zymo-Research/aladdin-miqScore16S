@@ -66,7 +66,7 @@ workflow {
         .splitCsv( header: true )
         .first() // Only support 1 pair of FASTQ for now
         .map {
-            [ it['sample'], [ file(it['read_1']), file(it['read_2']) ] ]
+            [ it['sample'], file(it['read_1']), file(it['read_2']) ]
         }
         .set { input }
     downsample(input)
