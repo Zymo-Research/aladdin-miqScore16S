@@ -86,6 +86,12 @@
             "type": "object",
             "description": "Less common options for the pipeline, typically set in a config file",
             "properties": {
+                "downsample_num": {
+                    "type": "integer",
+                    "description": "Number of read pairs to downsample to. If input has fewer reads than this, downsampling will not happen. Set to 0 to turn this off.",
+                    "minimum": 0,
+                    "default": 100000
+                },
                 "name": {
                     "type": "string",
                     "description": "Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic",
