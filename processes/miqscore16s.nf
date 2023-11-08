@@ -5,7 +5,7 @@ params.reverse_primer_length = 24
 params.amplicon_length = 510
 
 process miqscore16s {
-    container 'zymoresearch/miqscore16s:latest'
+    container 'zymoresearch/miqscore16s:110723'
     publishDir "${params.publish_dir}", mode: 'copy'
 
     input:

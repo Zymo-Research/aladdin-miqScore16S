@@ -33,23 +33,23 @@
             "properties": {
                 "forward_primer_length": {
                     "type": "integer",
-                    "description": "Length of the forward primer",
-                    "minimum": 1,
-                    "maximum": 50,
-                    "default": 16
+                    "description": "Length of the forward primer, excluding the adapter. For example, the forward primer sequence in the Zymo Quick 16S Plus Kit (V3-V4) is CCTACGGGDGGCWGCAG, whihc is 17 bp long.",
+                    "minimum": 0,
+                    "maximum": 30,
+                    "default": 17
                 },
                 "reverse_primer_length": {
                     "type": "integer",
-                    "description": "Length of the reverse primer",
-                    "minimum": 1,
-                    "maximum": 50,
+                    "description": "Length of the reverse primer, excluding the adapter. For example, the reverse primer sequence in the Zymo Quick 16S Plus Kit (V3-V4) is GACTACNVGGGTMTCTAATCC, which is 24 bp long.",
+                    "minimum": 0,
+                    "maximum": 30,
                     "default": 24
                 },
                 "amplicon_length": {
                     "type": "integer",
-                    "description": "Length of the amplicon",
+                    "description": "The maximum expected length of the amplicon, including the primers.",
                     "minimum": 1,
-                    "maximum": 5000,
+                    "maximum": 1000,
                     "default": 510
                 }
             },
