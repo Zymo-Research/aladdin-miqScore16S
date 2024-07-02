@@ -4,7 +4,6 @@
     "title": "Zymo-Research/aladdin-miqScore16S pipeline parameters",
     "description": "Nextflow pipeline for calculating MIQ scores, part of the Aladdin Bioinformatics Platform pipeline catalog",
     "single_sample": true,
-    "group_comparison": false,
     "type": "object",
     "definitions": {
         "input_output_options": {

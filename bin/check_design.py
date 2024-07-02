@@ -2,42 +2,43 @@
 
 import argparse
 import re
-import os
+import csv
 
 def check_design(DesignFileIn, DesignFileOut):
 
-    HEADER = ['group','sample','read_1','read_2']
-    label_pattern = r"^[a-zA-Z0-9][a-zA-Z0-9_\-\.]*$"
+    required_columns = ['sample','read_1','read_2']
+    label_pattern = r"^[a-zA-Z][a-zA-Z0-9_]*$"
     fastq_pattern = r"^.*(fastq|fq)(\.gz)?$"
     
     with open(DesignFileIn, "r") as fin:
-        # Check the header first
-        header = fin.readline().strip().split(',')
-        assert header == HEADER, "Header of design file Incorrect! Should be {}".format(','.join(HEADER))
+
+        reader = csv.DictReader(fin)
+
+        # Check if header contains required columns
+        assert all(column in reader.fieldnames for column in required_columns), \
+            "The design file must contain the following columns: 'sample', 'read_1', 'read_2'."
         
-        labels = []
-        groups = []
-        # Check the rest
-        for line in fin:
-            cols = line.strip().split(',')
-            # Check the number of columns in each line
-            assert len(cols) == len(HEADER), "Number of columns incorrect in line '{}'!".format(line.strip())
-            # Check the sample label
-            assert re.match(label_pattern, cols[1]), "Sample label {} contains illegal characters or does not start with letters!".format(cols[1])
-            assert cols[1] not in labels, "Duplicate sample label {}".format(cols[1])
-            labels.append(cols[1])
-            # Check the fastq file locations
-            assert cols[2], "R1 path could not be missing!"
-            assert re.match(fastq_pattern, cols[2]), "R1 path must point to a FASTQ file or gziped FASTQ file!"
-            assert cols[3], "R2 path could not be missing!"
-            assert re.match(fastq_pattern, cols[3]), "R2 path must point to a FASTQ file or gziped FASTQ file!"
-            # Check the group label
-            if cols[0]:
-                assert re.match(label_pattern, cols[0]), "Group label {} contains illegal characters or does not start with letters!".format(cols[0])
-                groups.append(cols[0])
-            assert len(groups)==0 or len(groups)==len(labels), "Group label(s) missing in some but not all samples!"
-    
-    os.rename(DesignFileIn, DesignFileOut)
+        # Open the output file to write the first row after validation
+        with open(DesignFileOut, mode='w', newline='') as fout:
+            writer = csv.DictWriter(fout, fieldnames=reader.fieldnames)
+            writer.writeheader()
+            # Iterate over rows to validate data
+            for i, row in enumerate(reader):
+                if i == 0:
+                    sample = row['sample']
+                    read_1 = row['read_1']
+                    read_2 = row['read_2']
+                    # Validate 'sample' column
+                    assert re.match(label_pattern, sample), "Sample label {} contains illegal characters or does not start with letters!".format(sample)
+                    # Validate 'read_1' and 'read_2' columns
+                    assert re.match(fastq_pattern, read_1), "R1 path must point to a FASTQ file or gziped FASTQ file!"
+                    if read_2:
+                        assert re.match(fastq_pattern, read_2), "R2 path must point to a FASTQ file or gziped FASTQ file!"
+                    # Write the first row to the output file
+                    writer.writerow(row)
+                else:
+                    print("Any rows after the first in the design file are ignored in this pipeline!")
+                    break
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""Sanity check the design CSV file""")
