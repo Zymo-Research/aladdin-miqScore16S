@@ -16,15 +16,17 @@ process miqscore16s {
 
     script:
     """
-    mkdir -p /data/input/sequence
-    mv $read_1 /data/input/sequence/standard_submitted_R1.fastq
-    mv $read_2 /data/input/sequence/standard_submitted_R2.fastq
-    mkdir -p /data/output
+    export FORWARDREADS=\$PWD/${read_1}
+    export REVERSEREADS=\$PWD/${read_2}
+    mkdir output
+    export OUTPUTFOLDER=\$PWD/output
+    mkdir working
+    export WORKINGFOLDER=\$PWD/working
     export SAMPLENAME=${name}
     export FORWARDPRIMERLENGTH=${params.forward_primer_length}
     export REVERSEPRIMERLENGTH=${params.reverse_primer_length}
     export AMPLICONLENGTH=${params.amplicon_length}
     python3 /opt/miqscore16s/analyzeStandardReads.py
-    mv /data/output/*.html ./
+    mv output/*.html ./
     """
 }
