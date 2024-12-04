@@ -22,6 +22,7 @@ process miqscore16s {
     export OUTPUTFOLDER=\$PWD/output
     mkdir working
     export WORKINGFOLDER=\$PWD/working
+    export LOGFILE=\$PWD/miqcore16s.log
     export SAMPLENAME=${name}
     export FORWARDPRIMERLENGTH=${params.forward_primer_length}
     export REVERSEPRIMERLENGTH=${params.reverse_primer_length}
