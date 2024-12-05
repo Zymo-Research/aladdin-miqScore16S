@@ -1,11 +1,11 @@
 // Run MIQ score 16S code
 params.publish_dir = "miqscore16s"
-params.forward_primer_length = 16
+params.forward_primer_length = 17
 params.reverse_primer_length = 24
 params.amplicon_length = 510
 
 process miqscore16s {
-    container 'zymoresearch/miqscore16s:110723'
+    container 'zymoresearch/miqscore16s:120524'
     publishDir "${params.publish_dir}", mode: 'copy'
 
     input:
@@ -20,8 +20,7 @@ process miqscore16s {
     export REVERSEREADS=\$PWD/${read_2}
     mkdir output
     export OUTPUTFOLDER=\$PWD/output
-    mkdir working
-    export WORKINGFOLDER=\$PWD/working
+    export SEQUENCEFOLDER=\$PWD
     export LOGFILE=\$PWD/miqcore16s.log
     export SAMPLENAME=${name}
     export FORWARDPRIMERLENGTH=${params.forward_primer_length}
