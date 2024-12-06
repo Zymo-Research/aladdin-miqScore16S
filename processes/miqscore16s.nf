@@ -1,11 +1,11 @@
 // Run MIQ score 16S code
 params.publish_dir = "miqscore16s"
-params.forward_primer_length = 16
+params.forward_primer_length = 17
 params.reverse_primer_length = 24
 params.amplicon_length = 510
 
 process miqscore16s {
-    container 'zymoresearch/miqscore16s:110723'
+    container 'zymoresearch/miqscore16s:120524'
     publishDir "${params.publish_dir}", mode: 'copy'
 
     input:
@@ -16,15 +16,17 @@ process miqscore16s {
 
     script:
     """
-    mkdir -p /data/input/sequence
-    mv $read_1 /data/input/sequence/standard_submitted_R1.fastq
-    mv $read_2 /data/input/sequence/standard_submitted_R2.fastq
-    mkdir -p /data/output
+    export FORWARDREADS=\$PWD/${read_1}
+    export REVERSEREADS=\$PWD/${read_2}
+    mkdir output
+    export OUTPUTFOLDER=\$PWD/output
+    export SEQUENCEFOLDER=\$PWD
+    export LOGFILE=\$PWD/miqcore16s.log
     export SAMPLENAME=${name}
     export FORWARDPRIMERLENGTH=${params.forward_primer_length}
     export REVERSEPRIMERLENGTH=${params.reverse_primer_length}
     export AMPLICONLENGTH=${params.amplicon_length}
     python3 /opt/miqscore16s/analyzeStandardReads.py
-    mv /data/output/*.html ./
+    mv output/*.html ./
     """
 }
