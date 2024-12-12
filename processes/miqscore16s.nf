@@ -9,15 +9,15 @@ process miqscore16s {
     publishDir "${params.publish_dir}", mode: 'copy'
 
     input:
-    tuple val(name), path(read_1), path(read_2)
+    tuple val(name), path('standard_submitted_R1.fastq.gz'), path('standard_submitted_R2.fastq.gz')
 
     output:
     path '*.html', emit: report
 
     script:
     """
-    export FORWARDREADS=\$PWD/${read_1}
-    export REVERSEREADS=\$PWD/${read_2}
+    export FORWARDREADS=\$PWD/standard_submitted_R1.fastq.gz
+    export REVERSEREADS=\$PWD/standard_submitted_R2.fastq.gz
     mkdir output
     export OUTPUTFOLDER=\$PWD/output
     export SEQUENCEFOLDER=\$PWD
